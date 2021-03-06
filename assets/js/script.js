@@ -108,7 +108,9 @@ $(".list-group").on("click", "span", function() {
   // enable jquery ui datepicker
   dateInput.datepicker({
     minDate: 1
+
   });
+  dateInput();
 
   // automatically focus on new element
   dateInput.trigger("focus");
@@ -153,15 +155,27 @@ $(".card .list-group").sortable({
   helper: "clone",
   activate: function(event) {
     console.log("activate", this);
+    document.querySelector("this")
+    .addClass("dropover");
+    document.querySelector(".bottom-trash").addClass("bottom-trash-drag");
+
   },
   deactivate: function(event) {
     console.log("deactivate", this);
+    document.querySelector("this")
+    .removeClass("dropover");
+    document.querySelector(".bottom-trash").removeClass("bottom-trash-drag");
+
   },
   over: function(event) {
     console.log("over", event.target);
+    document.querySelector(event.target)
+    .addClass("dropover-active");
   },
   out: function(event) {
     console.log("out", event.target);
+    document.querySelector(event.taget)
+    .removeClass("dropover-active");
   },
   update: function(event) {
   // array to store the task data in
@@ -212,7 +226,7 @@ $("#task-form-modal").on("shown.bs.modal", function() {
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-save").click(function() {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -252,9 +266,12 @@ $("#trash").droppable({
   },
   over: function(event, ui) {
     console.log("over");
+    document.querySelector(".bottom-trash").addClass("bottom-trash-active");
+
   },
   out: function(event, ui) {
     console.log("out");
+    document.querySelector(".bottom-trash").removeClass("bottom-trash-active");
   }
   
  });
@@ -288,5 +305,9 @@ dateInput.datepicker({
     $(this).trigger("change");
   }
 });
-
-
+saveTasks();
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000*60)* 30);
